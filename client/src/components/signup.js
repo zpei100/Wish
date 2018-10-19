@@ -48,7 +48,7 @@ class Signup extends Component {
 
   render() {
     return (
-      <div className="col-sm-6">
+      <div className="col-sm-6 m-auto">
         <form className="form-group" onSubmit={this.handleSubmit.bind(this)}>
           <label for="username">Login Username</label>
           <input

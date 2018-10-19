@@ -27,10 +27,16 @@ exports.search = function(url, username = 'zen') {
   });
 };
 
+exports.redir = function(req, res, next) {
+  console.log('this is called')
+  if (req.url !== '/') res.status(301).redirect('/');
+  else next();
+};
+
 exports.checkUser = function(req, res, next) {
   if (req.session.user === undefined) res.send('/');
   else next();
-}
+};
 
 exports.findWishes = function(username) {
   return new Promise(function(resolve, reject) {
@@ -46,9 +52,12 @@ exports.findWishes = function(username) {
 exports.signup = function(username, password, email) {
   return new Promise(function(resolve, reject) {
     bcrypt.genSalt(10, null, function(err, salt) {
-      if(err) reject(err);
+      if (err) reject(err);
       bcrypt.hash(password, salt, function(err, hash) {
-        new User({ username, password: hash, email }).save().then(resolve).catch(reject);
+        new User({ username, password: hash, email })
+          .save()
+          .then(resolve)
+          .catch(reject);
       });
     });
   });

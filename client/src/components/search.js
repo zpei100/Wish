@@ -29,7 +29,7 @@ class Search extends Component {
     return (
       <form onSubmit={this.handleSubmit.bind(this)}>
         <label for="search">Enter the URL for your amazon wish!</label>
-        <input type="url" value={this.state.url} placeholder="Enter URL" onChange={this.handleInputChange.bind(this)}></input>
+        <input className="url" type="url" value={this.state.url} placeholder="Enter URL" onChange={this.handleInputChange.bind(this)}></input>
       </form> 
     );
   }

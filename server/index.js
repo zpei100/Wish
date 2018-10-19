@@ -8,12 +8,12 @@ const path = require('path');
 const helper = require('../helper/helper');
 
 app.use(bodyParser.json());
-
 app.use(session({
   secret: 'mvp'
 }))
 
 app.use(express.static(path.join(__dirname, '../client/build')))
+
 
 //need to do:
 
@@ -26,7 +26,6 @@ app.use(express.static(path.join(__dirname, '../client/build')))
 
 //functions
 //need to validate url to be an actual item url
-
 app.get('/wishes', helper.checkUser, function(req, res) {
   helper.findWishes(req.session.user).then((data) => res.send(data));
 })

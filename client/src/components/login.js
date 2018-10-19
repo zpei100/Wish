@@ -31,9 +31,8 @@ class Login extends Component {
   }
 
   render() {
-    console.log('props for login: ', this.props)
     return (
-      <div className="col-sm-6">
+      <div className="col-sm-6 m-auto">
         <form className="form-group" onSubmit={this.handleSubmit.bind(this)}>
           <label for="username">Login Username</label>
           <input

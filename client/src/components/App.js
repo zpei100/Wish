@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import './style.css'
 
 import Nav from './nav';
 import Signup from './signup';
@@ -31,7 +32,9 @@ class App extends Component {
   }
 
   render() {
-    console.log('user exists? ', this.state.validated)
+
+
+
     return (
       <BrowserRouter>
         <div>
@@ -41,36 +44,39 @@ class App extends Component {
             handleLogout={this.updateCurrentUser.bind(this)}
           />
           <div className="container">
-            <div className="row">
+            <div className="">
               {this.state.validated ? (
                 <span />
               ) : (
                 <Route
                   exact
                   path="/signup"
-                  component={() => (
-                    <Signup handleSignup={this.updateCurrentUser.bind(this)} />
-                  )}
+                  component={() => {
+                    return this.state.validated ? <div></div> :
+                    <Signup className="my-3" handleSignup={this.updateCurrentUser.bind(this)} />
+                  }}
                 />
               )}
 
               <Route
                 exact
                 path="/login"
-                component={() => (
-                  <Login handleLogin={this.updateCurrentUser.bind(this)} />
-                )}
+                component={() => {
+                  return this.state.validated ? <div></div> :
+                  <Login className="my-3" handleLogin={this.updateCurrentUser.bind(this)} />
+                }}
               />
-              <Route exact path="/search" component={Search} />
             </div>
 
             {this.state.validated ? (
-              <div>
-                <Search currentUser={this.state.currentUser} />
-                <Wishes />
+              <div className="view">
+                <Search className="m-auto" currentUser={this.state.currentUser} />
+                <Wishes validated={this.state.validated} />
               </div>
             ) : (
-              <h4>Log in to see your wishes</h4>
+              <div className="view">
+                <p className="display-4 text-xs-center">Log in to see your wishes</p>
+              </div>
             )}
           </div>
         </div>
