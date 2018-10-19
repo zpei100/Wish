@@ -27,18 +27,16 @@ app.use(express.static(path.join(__dirname, '../client/build')))
 
 //functions
 //need to validate url to be an actual item url
-app.post('/addItem', function({body: {url}}, res) {
-  helper.search(url);
+app.post('/search', function(req, res) {
+
+  helper.search(req.body.url, req.session.user);
   res.send('got it !');
 })
 
 //functions
 //need to auto turn on login status
 app.post('/signup', function({body: {username, password, email}}, res) {
-  helper.signup(username, password, email).then(saved => {
-    console.log('result from saving is: ', saved);
-    //when is then triggered? does signup return a promise:?
-  })
+  helper.signup(username, password, email)
 })
 
 //have not tested session yet, but login works on the validation end
@@ -48,6 +46,7 @@ app.post('/login', function(req, res) {
   helper.login(username, password, function(validated) {
     if (validated) req.session.regenerate(function(err) {
       req.session.user = username;
+      res.redirect('/search')
     })
   })
 })

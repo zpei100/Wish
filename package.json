@@ -19,6 +19,7 @@
     "jquery": "^3.3.1",
     "jsdom": "^12.2.0",
     "mongoose": "^5.3.4",
-    "popper": "^1.0.1"
+    "popper": "^1.0.1",
+    "product-scraper": "^0.1.1"
   }
 }

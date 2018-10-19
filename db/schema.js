@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const mlab = `mongodb://wish1111:wish1111@ds137003.mlab.com:37003/mvp`
+const mlab = `mongodb://wish1111:wish1111@ds137003.mlab.com:37003/mvp`;
 
 mongoose.connect(mlab);
 
@@ -10,15 +10,12 @@ const amzItemSchema = new mongoose.Schema({
   },
   price: Number,
   title: String,
-  username: {
-    type: String,
-    unique: true
+  users: {
+    type: [String]
   },
-  email: {
-    type: String,
-    unique: true
-  }
-})
+  image: String,
+  details: String
+});
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -29,10 +26,15 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
   }
-})
+});
 
 const AmzItem = mongoose.model('amzItem', amzItemSchema);
-const User =  mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema);
 
-module.exports = { AmzItem, User }
+module.exports = { AmzItem, User };

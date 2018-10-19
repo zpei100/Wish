@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-class Signup extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
       password: '',
-      email: ''
     };
   }
 
@@ -19,16 +18,11 @@ class Signup extends Component {
     this.setState({ password: e.target.value });
   }
 
-  handleEmailInput(e) {
-    this.setState({ email: e.target.value });
-  }
-
   handleSubmit(e) {
-    //need to validate password and email, possible a second password field
     e.preventDefault();
-    const { username, password, email } = this.state;
-    axios.post('/signup', { username, password, email });
-    this.setState({username: '', password: '', email: ''})
+    const { username, password } = this.state;
+    axios.post('/login', { username, password });
+    this.setState({username: '', password: ''})
   }
 
   render() {
@@ -55,21 +49,11 @@ class Signup extends Component {
             onChange={this.handlePasswordInput.bind(this)}
           />
 
-          <label for="email">Email Address</label>
-          <input
-            className="form-control"
-            type="email"
-            name="email"
-            placeholder="Enter Email"
-            value={this.state.email}
-            onChange={this.handleEmailInput.bind(this)}
-          />
-
-          <button className="btn btn-warning my-3">Signup !</button>
+          <button className="btn btn-warning my-3">Login !</button>
         </form>
       </div>
     );
   }
 }
 
-export default Signup;
+export default Login;
