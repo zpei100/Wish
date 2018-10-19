@@ -10,9 +10,7 @@ const amzItemSchema = new mongoose.Schema({
   },
   price: Number,
   title: String,
-  users: {
-    type: [String]
-  },
+  users: [String],
   image: String,
   details: String
 });

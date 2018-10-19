@@ -5,6 +5,7 @@ import Nav from './nav';
 import Signup from './signup';
 import Login from './login';
 import Search from './search';
+import Wishes from './wishes';
 
 //need to do: 
 //a life cycle method to get most popular urls = based on user count;
@@ -28,6 +29,7 @@ class App extends Component {
               <Route exact path="/search" component={Search}/>
             </div>
             <Search />
+            <Wishes />
           </div>
         </div>
       </BrowserRouter>

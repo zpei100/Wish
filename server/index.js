@@ -27,8 +27,12 @@ app.use(express.static(path.join(__dirname, '../client/build')))
 
 //functions
 //need to validate url to be an actual item url
-app.post('/search', function(req, res) {
 
+app.get('/wishes', function(req, res) {
+  helper.findWishes(req.session.user).then((data) => res.send(data));
+})
+
+app.post('/search', function(req, res) {
   helper.search(req.body.url, req.session.user);
   res.send('got it !');
 })

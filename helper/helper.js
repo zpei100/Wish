@@ -5,24 +5,37 @@ const { AmzItem, User } = require('../db/schema');
 const scraper = require('product-scraper');
 
 //functions, but takes a long time
-exports.search = function(url, username) {
-  scraper.init(url, function({title, price, image, details, url}) {
-    AmzItem.findOne({url}).then(result => {
+exports.search = function(url, username = 'zen') {
+  scraper.init(url, function({ title, price, image, details, url }) {
+    AmzItem.findOne({ url }).then(result => {
       if (result !== null) {
         var { users } = result;
-        if (users.includes(username)) return 
+        if (users.includes(username)) return;
         else users.push(username);
-      } else users = [username];
+      } else var users = [username];
 
-      AmzItem.findOneAndUpdate({url}, {title, price: price.slice(1), image, details, url, users}, {upsert: true}, function(err, result) {
-        if (err) console.log(err);
-        console.log('result after db storage is: ', result)
-      })
-    })
+      AmzItem.findOneAndUpdate(
+        { url },
+        { title, price: price.slice(1), image, details, url, users },
+        { upsert: true },
+        function(err, result) {
+          if (err) console.log('error is: ', err);
+          console.log('result after db storage is: ', result);
+        }
+      );
+    });
   });
 };
 
-exports.search('https://www.amazon.com/Echo-Sub-Bundle-2nd-Devices/dp/B07H18JY6K/ref=redir_mobile_desktop?_encoding=UTF8&ref_=ods_gw_ha_po_dc_092318', 'zen');
+exports.findWishes = function(username) {
+  return new Promise(function(resolve, reject) {
+    AmzItem.find({ users: { $elemMatch: { $eq: username } } })
+      .then(resolve)
+      .catch(reject);
+  });
+};
+
+// exports.search('https://www.amazon.com/Echo-Sub-Bundle-2nd-Devices/dp/B07H18JY6K/ref=redir_mobile_desktop?_encoding=UTF8&ref_=ods_gw_ha_po_dc_092318', 'zen');
 
 //functions, need callback?
 exports.signup = async function(username, password, email) {
