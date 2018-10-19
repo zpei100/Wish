@@ -7,6 +7,7 @@ class Signup extends Component {
     this.state = {
       username: '',
       password: '',
+      confirmPassword: '',
       email: ''
     };
   }
@@ -19,16 +20,30 @@ class Signup extends Component {
     this.setState({ password: e.target.value });
   }
 
+  handleConfirmPasswordInput(e) {
+    this.setState({ confirmPassword: e.target.value});
+  }
+
   handleEmailInput(e) {
     this.setState({ email: e.target.value });
   }
-
+  
   handleSubmit(e) {
-    //need to validate password and email, possible a second password field
     e.preventDefault();
-    const { username, password, email } = this.state;
-    axios.post('/signup', { username, password, email });
-    this.setState({username: '', password: '', email: ''})
+    const { username, password, confirmPassword, email } = this.state;
+
+    if (confirmPassword !== password) {
+      this.setState({password: '', confirmPassword: ''})
+      return alert('Your passwords do not match! Try again.')
+    }
+
+    this.setState({username: '', password: '', email: '', confirmPassword: ''});
+
+    axios.post('/signup', { username, password, email }).then((success) => {
+      this.props.handleSignup(username);
+    }).catch((failed) => {
+      alert('Something went wrong with your login!')
+    })
   }
 
   render() {
@@ -45,7 +60,7 @@ class Signup extends Component {
             onChange={this.handleUsernameInput.bind(this)}
           />
 
-          <label for="password">Login Password</label>
+          <label for="password">Password</label>
           <input
             className="form-control"
             type="password"
@@ -53,6 +68,16 @@ class Signup extends Component {
             placeholder="Enter Password"
             value={this.state.password}
             onChange={this.handlePasswordInput.bind(this)}
+          />
+
+          <label for="password">Confirm Password</label>
+          <input
+            className="form-control"
+            type="password"
+            name="password"
+            placeholder="Enter Same Password"
+            value={this.state.confirmPassword}
+            onChange={this.handleConfirmPasswordInput.bind(this)}
           />
 
           <label for="email">Email Address</label>

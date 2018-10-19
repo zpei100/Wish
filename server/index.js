@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-const { JSDOM } = require('jsdom');
 const app = express();
 const session = require('express-session');
 const path = require('path');
@@ -40,7 +39,7 @@ app.post('/search', function(req, res) {
 //functions
 //need to auto turn on login status
 app.post('/signup', function({body: {username, password, email}}, res) {
-  helper.signup(username, password, email)
+  helper.signup(username, password, email).then(response => res.send('success')).catch('failed');
 })
 
 //have not tested session yet, but login works on the validation end
@@ -50,7 +49,8 @@ app.post('/login', function(req, res) {
   helper.login(username, password, function(validated) {
     if (validated) req.session.regenerate(function(err) {
       req.session.user = username;
-      res.redirect('/search')
+      res.send(validated);
+      //session user is correctly set
     })
   })
 })

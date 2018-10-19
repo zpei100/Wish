@@ -6,7 +6,7 @@ class Login extends Component {
     super(props);
     this.state = {
       username: '',
-      password: '',
+      password: ''
     };
   }
 
@@ -21,11 +21,17 @@ class Login extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const { username, password } = this.state;
-    axios.post('/login', { username, password });
     this.setState({username: '', password: ''})
+    axios.post('/login', { username, password }).then(({data}) => {
+      if (data === true)
+      this.props.handleLogin(username);
+    }).catch(() => {
+      alert('Wrong login credentials');
+    })
   }
 
   render() {
+    console.log('props for login: ', this.props)
     return (
       <div className="col-sm-6">
         <form className="form-group" onSubmit={this.handleSubmit.bind(this)}>
