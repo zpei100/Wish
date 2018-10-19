@@ -31,10 +31,12 @@ class App extends Component {
   }
 
   render() {
+    console.log('user exists? ', this.state.validated)
     return (
       <BrowserRouter>
         <div>
           <Nav
+            validated={this.state.validated}
             currentUser={this.state.currentUser}
             handleLogout={this.updateCurrentUser.bind(this)}
           />

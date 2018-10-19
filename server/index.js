@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, '../client/build')))
 //functions
 //need to validate url to be an actual item url
 
-app.get('/wishes', function(req, res) {
+app.get('/wishes', helper.checkUser, function(req, res) {
   helper.findWishes(req.session.user).then((data) => res.send(data));
 })
 

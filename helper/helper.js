@@ -27,6 +27,11 @@ exports.search = function(url, username = 'zen') {
   });
 };
 
+exports.checkUser = function(req, res, next) {
+  if (req.session.user === undefined) res.send('/');
+  else next();
+}
+
 exports.findWishes = function(username) {
   return new Promise(function(resolve, reject) {
     AmzItem.find({ users: { $elemMatch: { $eq: username } } })
