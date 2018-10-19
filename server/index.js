@@ -4,13 +4,17 @@ const axios = require('axios');
 const { JSDOM } = require('jsdom');
 const app = express();
 const session = require('express-session');
+const path = require('path');
 
 const helper = require('../helper/helper');
 
 app.use(bodyParser.json());
+
 app.use(session({
   secret: 'mvp'
 }))
+
+app.use(express.static(path.join(__dirname, '../client/build')))
 
 //need to do:
 
@@ -30,8 +34,11 @@ app.post('/addItem', function({body: {url}}, res) {
 
 //functions
 //need to auto turn on login status
-app.post('/signup', function({body: {username, password}}, res) {
-  helper.signup(username, password)
+app.post('/signup', function({body: {username, password, email}}, res) {
+  helper.signup(username, password, email).then(saved => {
+    console.log('result from saving is: ', saved);
+    //when is then triggered? does signup return a promise:?
+  })
 })
 
 //have not tested session yet, but login works on the validation end
@@ -49,4 +56,4 @@ app.post('/logout', function(req, res) {
   req.session.destroy();
 })
 
-app.listen(3000, console.log('server up'));
+app.listen(4000, console.log('server up on port 4000'));

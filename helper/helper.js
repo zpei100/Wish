@@ -17,10 +17,12 @@ exports.search = function (url) {
 }
 
 //functions, need callback?
-exports.signup = function (username, password) {
-  bcrypt.genSalt(10, null, function(err, salt) {
-    bcrypt.hash(password, salt, function(err, hash) {
-      new User({username, password: hash}).save()
+exports.signup = async function (username, password, email) {
+  return new Promise(function(resolve, reject) {
+    bcrypt.genSalt(10, null, function(err, salt) {
+      bcrypt.hash(password, salt, function(err, hash) {
+        new User({username, password: hash, email}).save() //callback? what to resolve?
+      })
     })
   })
 }

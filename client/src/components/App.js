@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Route } from "react-router-dom";
+
+import Nav from './nav';
+import Signup from './signup';
 
 //need to do: 
 //a life cycle method to get most popular urls = based on user count;
@@ -14,9 +18,18 @@ import React, { Component } from 'react';
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        
-      </div>
+      <BrowserRouter>
+        <div>
+          <Nav />
+          <div className="container">
+            <div className="row">
+              <Route exact path="/signup" component={Signup}/>
+
+            </div>
+          </div>
+        </div>
+      </BrowserRouter>
+      
     );
   }
 }
