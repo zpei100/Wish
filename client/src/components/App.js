@@ -9,16 +9,6 @@ import Login from './login';
 import Search from './search';
 import Wishes from './wishes';
 
-
-//need to do:
-//a life cycle method to get most popular urls = based on user count;
-
-//a button to sign up / login / logout, need to add email address
-
-//a form to post url to database
-
-//
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +21,12 @@ class App extends Component {
   }
 
   updateCurrentUser(username) {
-    this.setState({ currentUser: username, validated: username === '' ? false : true });
+    if (username !== '') {
+      axios.get('/wishes').then(({data}) => {
+        console.log('data back from wishes route: ', data)
+        this.setState({items: data, currentUser: username, validated: true})
+      })
+    } else this.setState({username, items:[], validated: false})
   }
 
   updateItemList (url) {
@@ -39,9 +34,8 @@ class App extends Component {
       url,
       username: this.state.currentUser
     }).then(() => {
-      console.log('the getting wishes is activated !')
-      axios.get('/wishes').then(({data : items}) => {
-        this.setState({items})
+      axios.get('/wishes').then(({data}) => {
+        this.setState({items: data.items})
       }).catch(() => console.log('getting wishes happened, but there is an error'))
     })
   }

@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const axios = require('axios');
 const app = express();
 const session = require('express-session');
 const path = require('path');
@@ -9,51 +8,43 @@ const helper = require('../helper/helper');
 
 app.use(bodyParser.json());
 app.use(session({
-  secret: 'mvp'
+  secret: 'mvp',
+  resave: true,
+  saveUninitialized: true
 }))
 
 app.use(express.static(path.join(__dirname, '../client/build')))
 
-
-//need to do:
-
-//polling amazon based on database: url // price update
-//a way to send emails to all users for that url
-//adjust user sign up to include email address info + email validation
-//url validation so our server doesn't crash
-//error handling ---- last step
-
-
-//functions
-//need to validate url to be an actual item url
-app.get('/wishes', helper.checkUser, function(req, res) {
-  helper.findWishes(req.session.user).then((result) => {
-    console.log('after finding wishes');
-    res.send(result)
-  });
+app.get('/wishes', function(req, res) {
+  helper.findWishes(req.session.user, function(items) {
+    res.send(items)
+  })
 })
 
 app.post('/search', function(req, res) {
-  console.log('url and user exist')
-  helper.search(req.body.url, req.session.user).then(res.send)
-
+  helper.search(req.body.url, req.session.user, function(err, saved) {
+    if (err) res.status(400).send();
+    res.send(saved);
+  })
 })
 
 //functions
 //need to auto turn on login status
 app.post('/signup', function({body: {username, password, email}}, res) {
-  helper.signup(username, password, email).then(response => res.send('success')).catch('failed');
+  helper.signup(username, password, email, function(err, response) {
+    if (err) {
+      console.log(err)
+      res.status(400).send(err);
+    }
+    else res.send('success');
+  })
 })
 
-//have not tested session yet, but login works on the validation end
-app.post('/login', function(req, res) {
-  const { username, password } = req.body;
-  
-  helper.login(username, password, function(validated) {
-    if (validated) req.session.regenerate(function(err) {
-      req.session.user = username;
-      res.send(validated);
-      //session user is correctly set
+app.post('/login', function({session, body: {username, password}}, res) {
+  helper.login(username, password, function(validation) {
+    session.regenerate(function() {
+      session.user = username;
+      res.send(validation);
     })
   })
 })

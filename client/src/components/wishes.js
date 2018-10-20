@@ -11,6 +11,9 @@ class Wishes extends Component {
 
   render() {
     if (this.props.items.length === 0) return <span className="view align-text-center display">Loading your wishes...</span>
+
+    console.log('the items are: ', this.props.items)
+
     return (
       <div>
         {this.props.items.map(({details, image, price, title, url}) => 

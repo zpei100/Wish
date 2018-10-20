@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const mlab = `mongodb://wish1111:wish1111@ds137003.mlab.com:37003/mvp`;
 
-mongoose.connect(mlab);
+mongoose.set('useFindAndModify', false);
+mongoose.connect(mlab, 
+  { useNewUrlParser: true, useCreateIndex: true });
 
 const amzItemSchema = new mongoose.Schema({
   url: {

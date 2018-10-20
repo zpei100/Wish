@@ -1,76 +1,57 @@
-const axios = require('axios');
-const { JSDOM } = require('jsdom');
 const bcrypt = require('bcrypt');
 const { AmzItem, User } = require('../db/schema');
 const scraper = require('product-scraper');
+const parsePrice = require('parse-price');
 
-//functions, but takes a long time
-exports.search = function(url, username) {
-  console.log('server side search conducted !!!');
-  console.log('this is the right url? ', url)
+const search = function(url, username, callback) {
+  scraper.init(url, function({ title, price, image, details, url }) {
+    AmzItem.findOne({ url }).then(result => {
+      if (result !== null) {
+        var { users } = result;
+        if (users.includes(username)) return;
+        else users.push(username);
+      } else var users = [username];
 
-  return new Promise(function(resolve, reject) {
-    scraper.init(url, function({ title, price, image, details, url }) {
-      AmzItem.findOne({ url }).then(result => {
-        if (result !== null) {
-          var { users } = result;
-          if (users.includes(username)) return;
-          else users.push(username);
-        } else var users = [username];
-  
-        AmzItem.findOneAndUpdate(
-          { url },
-          { title, price: price[0] === '$' ? price.slice(1) : price, image, details, url, users },
-          { upsert: true }
-        ).then(answer => {
-          resolve(true);
-        })
-      }).catch(err => console.log('error is: ', err));
-    });
-  })
-  
+      AmzItem.findOneAndUpdate(
+        { url },
+        { title, price: parsePrice(price), image, details, url, users },
+        { upsert: true }
+      ).then(updated => callback(null, updated)).catch(callback)
+    })
+  });
 };
 
-exports.redir = function(req, res, next) {
-  console.log('this is called')
+const redir = function(req, res, next) {
   if (req.url !== '/') res.status(301).redirect('/');
   else next();
 };
 
-exports.checkUser = function(req, res, next) {
+const checkUser = function(req, res, next) {
   if (req.session.user === undefined) res.send('/');
   else next();
 };
 
-exports.findWishes = function(username) {
-  return new Promise(function(resolve, reject) {
-    AmzItem.find({ users: { $elemMatch: { $eq: username } } })
-      .then(resolve)
-      .catch(reject);
-  });
+const findWishes = function(username, callback) {
+  AmzItem.find({ users: { $elemMatch: { $eq: username } } })
+    .then(callback)
 };
 
-// exports.search('https://www.amazon.com/Echo-Sub-Bundle-2nd-Devices/dp/B07H18JY6K/ref=redir_mobile_desktop?_encoding=UTF8&ref_=ods_gw_ha_po_dc_092318', 'zen');
-
-//functions, need callback?
-exports.signup = function(username, password, email) {
-  return new Promise(function(resolve, reject) {
-    bcrypt.genSalt(10, null, function(err, salt) {
-      if (err) reject(err);
-      bcrypt.hash(password, salt, function(err, hash) {
-        new User({ username, password: hash, email })
-          .save()
-          .then(resolve)
-          .catch(reject);
-      });
+const signup = function(username, password, email, callback) {
+  bcrypt.genSalt(10, null, function(err, salt) {
+    if (err) reject(err);
+    bcrypt.hash(password, salt, function(err, hash) {
+      new User({ username, password: hash, email }).save().then(saved => callback(null, saved)).catch(callback);
     });
   });
-};
+}
 
 //functions, but need callback
-exports.login = function(username, password, callback) {
+const login = function(username, password, callback) {
   User.findOne({ username }).then(user => {
-    bcrypt.compare(password, user.password).then(callback);
-    //logs true
+    bcrypt.compare(password, user.password).then(validation => {
+      callback(validation)
+    })
   });
 };
+
+module.exports = { search, redir, checkUser, findWishes, signup, login }

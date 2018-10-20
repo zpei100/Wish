@@ -22,12 +22,11 @@ class Login extends Component {
     e.preventDefault();
     const { username, password } = this.state;
     this.setState({username: '', password: ''})
-    axios.post('/login', { username, password }).then(({data}) => {
-      if (data === true)
-      this.props.handleLogin(username);
-    }).catch(() => {
-      alert('Wrong login credentials');
-    })
+    axios.post('/login', { username, password }).then(({data: validation}) => {
+      console.log('what comes back from login route? : ', validation)
+      if (validation) this.props.handleLogin(username);
+      else alert('Wrong login credentials');
+    }).catch(console.log)
   }
 
   render() {

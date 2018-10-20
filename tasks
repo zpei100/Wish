@@ -1,0 +1,31 @@
+Features:
+  1. Ability to sign up and login
+    -passwords must match, or alert 
+    -when login fails, passwords are reset
+    -signup success skips log in need
+    -when signed in, sign up and log in buttons are disabled
+
+  2. Ability to add amazon item url to collection 
+    -different accounts have access to their own cart 
+    -each item has a link to that url 
+  xx-ways to delete a wish
+  xx-ways to specify the price drop line 
+
+  3. Ability to keep polling for price updates (see below)
+
+Todos:
+  1. implement polling based on existing url in url collection
+  2. Compare price, and send out emails (find library)
+  3. CSS max height for wishes display, use scroll for overflow 
+  4. Implement custom url, that delivers similar page to amazon item page, with the ability for me to change the price whenever
+  5. Test number 4 with own emails (plural)
+  6. Logo for wi$hes 
+
+  * ways to delete a wish
+   
+
+
+
+
+
+
