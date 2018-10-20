@@ -2,25 +2,18 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 class Wishes extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: []
-    }
-  }
-
   componentDidMount() {
     axios.get('/wishes').then(({data : items}) => {
       console.log(items)
-      this.setState({items})
+      this.props.initialUpdate(items);
     })
   }
 
   render() {
-    if (this.state.items.length === 0) return <span className="view align-text-center display">Loading your wishes...</span>
+    if (this.props.items.length === 0) return <span className="view align-text-center display">Loading your wishes...</span>
     return (
       <div>
-        {this.state.items.map(({details, image, price, title, url}) => 
+        {this.props.items.map(({details, image, price, title, url}) => 
           <div className="row col-sm-12 container border border-danger my-3">
             <div className="col-sm-4"><img className="img-fit my-auto" src={image}/></div>
             <div  className="col-sm-8">

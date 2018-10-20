@@ -5,26 +5,30 @@ const { AmzItem, User } = require('../db/schema');
 const scraper = require('product-scraper');
 
 //functions, but takes a long time
-exports.search = function(url, username = 'zen') {
-  scraper.init(url, function({ title, price, image, details, url }) {
-    AmzItem.findOne({ url }).then(result => {
-      if (result !== null) {
-        var { users } = result;
-        if (users.includes(username)) return;
-        else users.push(username);
-      } else var users = [username];
+exports.search = function(url, username) {
+  console.log('server side search conducted !!!');
+  console.log('this is the right url? ', url)
 
-      AmzItem.findOneAndUpdate(
-        { url },
-        { title, price: price.slice(1), image, details, url, users },
-        { upsert: true },
-        function(err, result) {
-          if (err) console.log('error is: ', err);
-          console.log('result after db storage is: ', result);
-        }
-      );
+  return new Promise(function(resolve, reject) {
+    scraper.init(url, function({ title, price, image, details, url }) {
+      AmzItem.findOne({ url }).then(result => {
+        if (result !== null) {
+          var { users } = result;
+          if (users.includes(username)) return;
+          else users.push(username);
+        } else var users = [username];
+  
+        AmzItem.findOneAndUpdate(
+          { url },
+          { title, price: price[0] === '$' ? price.slice(1) : price, image, details, url, users },
+          { upsert: true }
+        ).then(answer => {
+          resolve(true);
+        })
+      }).catch(err => console.log('error is: ', err));
     });
-  });
+  })
+  
 };
 
 exports.redir = function(req, res, next) {

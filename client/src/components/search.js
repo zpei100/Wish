@@ -11,11 +11,7 @@ class Search extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    axios.post('/search', {
-      url: this.state.url,
-      username: this.props.currentUser
-    });
-
+    this.props.handleSearch(this.state.url)
     this.setState({url: ''})
   }
 

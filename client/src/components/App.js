@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import './style.css'
+import './style.css';
+import axios from 'axios';
 
 import Nav from './nav';
 import Signup from './signup';
 import Login from './login';
 import Search from './search';
 import Wishes from './wishes';
+
 
 //need to do:
 //a life cycle method to get most popular urls = based on user count;
@@ -23,7 +25,8 @@ class App extends Component {
 
     this.state = {
       currentUser: '',
-      validated: false
+      validated: false,
+      items: []
     };
   }
 
@@ -31,10 +34,23 @@ class App extends Component {
     this.setState({ currentUser: username, validated: username === '' ? false : true });
   }
 
+  updateItemList (url) {
+    axios.post('/search', {
+      url,
+      username: this.state.currentUser
+    }).then(() => {
+      console.log('the getting wishes is activated !')
+      axios.get('/wishes').then(({data : items}) => {
+        this.setState({items})
+      }).catch(() => console.log('getting wishes happened, but there is an error'))
+    })
+  }
+
+  initialUpdate (items) {
+    this.setState({items})
+  }
+
   render() {
-
-
-
     return (
       <BrowserRouter>
         <div>
@@ -70,8 +86,8 @@ class App extends Component {
 
             {this.state.validated ? (
               <div className="view">
-                <Search className="m-auto" currentUser={this.state.currentUser} />
-                <Wishes validated={this.state.validated} />
+                <Search className="m-auto" currentUser={this.state.currentUser} handleSearch={this.updateItemList.bind(this)} />
+                <Wishes initialUpdate={this.initialUpdate.bind(this)} items={this.state.items} validated={this.state.validated} />
               </div>
             ) : (
               <div className="view">

@@ -8,7 +8,6 @@ class Nav extends Component {
   }
 
   render() {
-    console.log('the button should be disabled? ', this.props.validated)
     return (
       <div className="navbar-expand-sm navbar navbar-primary bg-light">
         <Link to="/signup" ><button className={`btn btn-primary mx-2 ${this.props.validated ? 'disabled' : ''}`}>Sign up</button></Link>
