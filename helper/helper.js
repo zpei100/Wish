@@ -118,19 +118,19 @@ const createHtml = function(url, price, newPrice) {
 }
 
 
-const updateWishPoint = function(url, username, wishPoint) {
+const updateWishPoint = function(url, username, wishPoint, callback) {
   AmzItem.find({ users: { $elemMatch: { username: username } } })
   AmzItem.findOne({url}).then(item => {
     item.users.forEach(user => user.wishPoint = wishPoint)
     console.log(item.users);
-    AmzItem.findOneAndUpdate({url}, {users: item.users}).then(console.log);
+    AmzItem.findOneAndUpdate({url}, {users: item.users}).then(callback);
   })
 }
 
 //testing  --- this works
 // updateWishPoint('https://www.ebay.com/itm/132826935829', 'zen', 5)
 
-module.exports = { search, checkUser, findWishes, signup, login, poll };
+module.exports = { search, checkUser, findWishes, signup, login, poll, updateWishPoint };
 
 
 //Testing

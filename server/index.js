@@ -36,7 +36,11 @@ app.post('/search', function(req, res) {
 });
 
 app.post('/wishPoint', function(req, res) {
-  
+  const username = req.session.user;
+  const { url, wishPoint } = req.body;
+  helper.updateWishPoint(url, username, wishPoint, function() {
+    res.send(200);
+  })
 })
 
 //functions
