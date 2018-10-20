@@ -8,6 +8,7 @@ const { userPass } = require('./userPass');
 const transporter = nodemailer.createTransport(userPass );
 
 const search = function(url, username, callback) {
+  console.log('username exists when search is performed: ', username)
   scraper.init(url, function({ title, price, image, details }) {
     AmzItem.findOne({ url }).then(result => {
       if (result !== null) {
@@ -66,19 +67,24 @@ const poll = function () {
   AmzItem.find({}).then(data => {
     data.forEach(item => {
       scraper.init(item.url, function({ price: newPrice }) {
+        console.log('old price: ', item.price, 'and new price: ', newPrice);
+        newPrice = parsePrice(newPrice);
         if (newPrice < item.price) {
-          AmzItem.findOneAndUpdate({url: item.url}, {price: newPrice})
-          alertUsers (item.users, item.url, item.price, newPrice);
+          console.log('price dropped !!!');
+          AmzItem.findOneAndUpdate({url: item.url}, {price: newPrice}).then(() => {
+            alertUsers (item.users, item.url, item.price, newPrice);
+          })
         }
       })
     })
   });
 
-  setTimeout(poll, 60000)
+  setTimeout(poll, 5000)
 }
 
 const alertUsers = function (users, url, price, newPrice) {
   users.forEach(user => {
+    console.log('user is: ', user)
     User.findOne({username: user}).then(({email}) => {
       console.log('email exists for this user: ')
       console.log('the email constructed: ', createEmail(email, createHtml(url, price, newPrice)))
@@ -98,12 +104,12 @@ const createEmail = function (to, html) {
 
 const createHtml = function(url, price, newPrice) {
   return `
-    <p>One of your wish items' price has dropped from ${price} to ${newPrice} !!! </p>
+    <p>Your wish has been fulfilled !!! The price went from ${price} to ${newPrice} !!! </p>
     <a href=${url}>Link to your item</a>
   `
 }
 
-module.exports = { search, redir, checkUser, findWishes, signup, login, poll };
+module.exports = { search, checkUser, findWishes, signup, login, poll };
 
 
 //Testing
