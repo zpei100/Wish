@@ -23,7 +23,6 @@ class App extends Component {
   updateCurrentUser(username) {
     if (username !== '') {
       axios.get('/wishes').then(({data}) => {
-        console.log('data back from wishes route: ', data)
         this.setState({items: data, currentUser: username, validated: true})
       })
     } else this.setState({username, items:[], validated: false})
@@ -35,7 +34,7 @@ class App extends Component {
       username: this.state.currentUser
     }).then(() => {
       axios.get('/wishes').then(({data}) => {
-        this.setState({items: data.items})
+        this.setState({items: data})
       }).catch(() => console.log('getting wishes happened, but there is an error'))
     })
   }

@@ -4,15 +4,12 @@ import axios from 'axios';
 class Wishes extends Component {
   componentDidMount() {
     axios.get('/wishes').then(({data : items}) => {
-      console.log(items)
       this.props.initialUpdate(items);
     })
   }
 
   render() {
     if (this.props.items.length === 0) return <span className="view align-text-center display">Loading your wishes...</span>
-
-    console.log('the items are: ', this.props.items)
 
     return (
       <div>

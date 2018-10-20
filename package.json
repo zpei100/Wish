@@ -19,8 +19,10 @@
     "jquery": "^3.3.1",
     "jsdom": "^12.2.0",
     "mongoose": "^5.3.4",
+    "nodemailer": "^4.6.8",
     "parse-price": "^1.1.8",
     "popper": "^1.0.1",
-    "product-scraper": "^0.1.1"
+    "product-scraper": "^0.1.1",
+    "x-ray": "^2.3.3"
   }
 }

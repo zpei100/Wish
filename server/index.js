@@ -15,6 +15,11 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, '../client/build')))
 
+
+//this will start polling:
+//helper.poll();
+
+
 app.get('/wishes', function(req, res) {
   helper.findWishes(req.session.user, function(items) {
     res.send(items)
