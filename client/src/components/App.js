@@ -34,8 +34,15 @@ class App extends Component {
       username: this.state.currentUser
     }).then(() => {
       axios.get('/wishes').then(({data}) => {
-        this.setState({items: data})
+        this.setState({items: data});
+        console.log('the new items list: ', data)
       }).catch(() => console.log('getting wishes happened, but there is an error'))
+    })
+  }
+  
+  handleDeleteWish (url) {
+    axios.post('/deleteWish', {url}).then((data) => {
+      this.updateItemList(url)
     })
   }
 
@@ -80,7 +87,11 @@ class App extends Component {
             {this.state.validated ? (
               <div className="view">
                 <Search className="m-auto" currentUser={this.state.currentUser} handleSearch={this.updateItemList.bind(this)} />
-                <Wishes initialUpdate={this.initialUpdate.bind(this)} items={this.state.items} validated={this.state.validated} />
+
+                
+                  <Wishes initialUpdate={this.initialUpdate.bind(this)} items={this.state.items} validated={this.state.validated} deleteWish={this.handleDeleteWish.bind(this)} />
+                
+
               </div>
             ) : (
               <div className="view">

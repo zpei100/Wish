@@ -43,6 +43,15 @@ app.post('/wishPoint', function(req, res) {
   })
 })
 
+app.post('/deleteWish', function(req, res) {
+  console.log('the request is fired')
+  const username = req.session.user;
+  const { url } = req.body;
+  helper.deleteWish(url, username, function() {
+    res.status(200).send('success');
+  })
+})
+
 //functions
 //need to auto turn on login status
 app.post('/signup', function(req, res) {
@@ -63,6 +72,8 @@ app.post('/signup', function(req, res) {
 app.post('/login', function(req, res) {
   const {body: {username, password}} = req;
   helper.login(username, password, function(validation) {
+    if (validation === false) res.send(false);
+    else 
     req.session.regenerate(function() {
       req.session.user = username;
       res.send(validation);

@@ -57,9 +57,10 @@ const signup = function(username, password, email, callback) {
 
 const login = function(username, password, callback) {
   User.findOne({ username }).then(user => {
-    bcrypt.compare(password, user.password).then(validation => {
+    if (user === null) callback(false);
+    else bcrypt.compare(password, user.password).then(validation => {
       callback(validation);
-    });
+    })
   });
 };
 
@@ -121,16 +122,23 @@ const createHtml = function(url, price, newPrice) {
 const updateWishPoint = function(url, username, wishPoint, callback) {
   AmzItem.find({ users: { $elemMatch: { username: username } } })
   AmzItem.findOne({url}).then(item => {
-    item.users.forEach(user => user.wishPoint = wishPoint)
+    item.users.forEach(user => {
+      if (user.username === username) user.wishPoint = wishPoint
+    })
     console.log(item.users);
     AmzItem.findOneAndUpdate({url}, {users: item.users}).then(callback);
   })
 }
 
+const deleteWish = function(url, username, callback) {
+  console.log('url to be updated: ', url)
+  AmzItem.update({url: url}, {$pull: {users: {username: username}}})
+}
+
 //testing  --- this works
 // updateWishPoint('https://www.ebay.com/itm/132826935829', 'zen', 5)
 
-module.exports = { search, checkUser, findWishes, signup, login, poll, updateWishPoint };
+module.exports = { search, checkUser, findWishes, signup, login, poll, updateWishPoint, deleteWish };
 
 
 //Testing

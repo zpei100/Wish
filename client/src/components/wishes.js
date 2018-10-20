@@ -23,6 +23,10 @@ class Wishes extends Component {
     else axios.post('/wishPoint', { wishPoint, url }).then(console.log);
   }
 
+  handleDeleteWish (url) {
+    this.props.deleteWish(url)
+  }
+
   componentDidMount() {
     axios.get('/wishes').then(({ data: items }) => {
       this.props.initialUpdate(items);
@@ -69,6 +73,7 @@ class Wishes extends Component {
                 <li className="list-group-item card-text">
                   Descriptions: {details}
                 </li>
+                <button onClick={() => this.handleDeleteWish.bind(this)(url)} className="btn btn-danger">unWish</button>
               </ul>
             </div>
           </div>
