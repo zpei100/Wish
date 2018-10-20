@@ -74,7 +74,7 @@ const poll = function () {
         if (newPrice < item.price) {
           var emailTarget = [];
           item.users.forEach(user => {
-            if (newPrice < user.wishPoint) {
+            if (newPrice <= user.wishPoint) {
               emailTarget.push(user.username);
               console.log('price dropped for user: ', user.username);
             }
@@ -116,6 +116,19 @@ const createHtml = function(url, price, newPrice) {
     <a href=${url}>Link to your item</a>
   `
 }
+
+
+const updateWishPoint = function(url, username, wishPoint) {
+  AmzItem.find({ users: { $elemMatch: { username: username } } })
+  AmzItem.findOne({url}).then(item => {
+    item.users.forEach(user => user.wishPoint = wishPoint)
+    console.log(item.users);
+    AmzItem.findOneAndUpdate({url}, {users: item.users}).then(console.log);
+  })
+}
+
+//testing  --- this works
+// updateWishPoint('https://www.ebay.com/itm/132826935829', 'zen', 5)
 
 module.exports = { search, checkUser, findWishes, signup, login, poll };
 

@@ -35,6 +35,10 @@ app.post('/search', function(req, res) {
   });
 });
 
+app.post('/wishPoint', function(req, res) {
+  
+})
+
 //functions
 //need to auto turn on login status
 app.post('/signup', function(req, res) {
