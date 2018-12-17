@@ -70,7 +70,6 @@ const poll = function () {
   AmzItem.find({}).then(data => {
     data.forEach(item => {
       scraper.init(item.url, function({ price: newPrice }) {
-        // console.log('old price: ', item.price, 'and new price: ', newPrice);
         newPrice = parsePrice(newPrice);
         if (newPrice < item.price) {
           var emailTarget = [];
@@ -131,8 +130,8 @@ const updateWishPoint = function(url, username, wishPoint, callback) {
 }
 
 const deleteWish = function(url, username, callback) {
-  console.log('url to be updated: ', url)
-  AmzItem.update({url: url}, {$pull: {users: {username: username}}})
+  console.log('url to be updated: ', url, 'and username is: ', username)
+  AmzItem.updateOne({url: url}, {$pull: {users: {username: username}}}).then(callback)
 }
 
 //testing  --- this works

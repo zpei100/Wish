@@ -85,7 +85,7 @@ app.post('/logout', function(req, res) {
   req.session.destroy();
 });
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8200;
 
 app.listen(port, function() {
   console.log(`server up on ${port}`);
